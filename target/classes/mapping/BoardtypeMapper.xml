@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfby.dao.BoardtypeMapper">
+  <resultMap id="BaseResultMap" type="com.dfby.pojo.Boardtype">
+    <id column="boardTypeId" jdbcType="INTEGER" property="boardtypeid" />
+    <result column="boardTypeName" jdbcType="VARCHAR" property="boardtypename" />
+    <collection property="boardList" column="boardTypeId" ofType="Board" select="com.dfby.dao.BoardMapper.Board_SelectByboardTypeId"></collection>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    boardTypeId, boardTypeName
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_boardtype
+    where boardTypeId = #{boardtypeid,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from tbl_boardtype
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tbl_boardtype
+    where boardTypeId = #{boardtypeid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dfby.pojo.Boardtype">
+    insert into tbl_boardtype (boardTypeId, boardTypeName)
+    values (#{boardtypeid,jdbcType=INTEGER}, #{boardtypename,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dfby.pojo.Boardtype">
+    insert into tbl_boardtype
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="boardtypeid != null">
+        boardTypeId,
+      </if>
+      <if test="boardtypename != null">
+        boardTypeName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="boardtypeid != null">
+        #{boardtypeid,jdbcType=INTEGER},
+      </if>
+      <if test="boardtypename != null">
+        #{boardtypename,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dfby.pojo.Boardtype">
+    update tbl_boardtype
+    <set>
+      <if test="boardtypename != null">
+        boardTypeName = #{boardtypename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where boardTypeId = #{boardtypeid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dfby.pojo.Boardtype">
+    update tbl_boardtype
+    set boardTypeName = #{boardtypename,jdbcType=VARCHAR}
+    where boardTypeId = #{boardtypeid,jdbcType=INTEGER}
+  </update>
+</mapper>

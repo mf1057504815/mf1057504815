@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfby.dao.TopicMapper">
+  <resultMap id="BaseResultMap" type="com.dfby.pojo.Topic">
+    <id column="topicId" jdbcType="INTEGER" property="topicid" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="publishTime" jdbcType="TIMESTAMP" property="publishtime" />
+    <result column="modifyTime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="boardId" jdbcType="INTEGER" property="boardid" />
+    <association property="user" column="uid" select="com.dfby.dao.UserMapper.selectByPrimaryKey"></association>
+    <association property="replyNum" column="topicId" select="com.dfby.dao.ReplyMapper.selectByCount"></association>
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    topicId, title, content, publishTime, modifyTime, uid, boardId
+  </sql>
+
+<!--  <select id="TopicSelectByboardId" parameterType="Integer" resultMap="BaseResultMap">-->
+<!--    select * from tbl_topic where boardId=#{id}-->
+<!--  </select>-->
+  <select id="selectBycount" parameterType="Integer" resultType="int">
+    select count(*) from tbl_topic where boardId=#{id}
+  </select>
+
+  <select id="selectLastTopic" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from tbl_topic where boardId=#{id} order by modifyTime desc limit 0,1
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_topic
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tbl_topic
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dfby.pojo.Topic">
+    insert into tbl_topic (topicId, title, content, 
+      publishTime, modifyTime, uid, 
+      boardId)
+    values (#{topicid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{publishtime,jdbcType=TIMESTAMP}, #{modifytime,jdbcType=TIMESTAMP}, #{uid,jdbcType=INTEGER}, 
+      #{boardid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dfby.pojo.Topic">
+    insert into tbl_topic
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="topicid != null">
+        topicId,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="publishtime != null">
+        publishTime,
+      </if>
+      <if test="modifytime != null">
+        modifyTime,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="boardid != null">
+        boardId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="topicid != null">
+        #{topicid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="publishtime != null">
+        #{publishtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifytime != null">
+        #{modifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="boardid != null">
+        #{boardid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dfby.pojo.Topic">
+    update tbl_topic
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="publishtime != null">
+        publishTime = #{publishtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifytime != null">
+        modifyTime = #{modifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="boardid != null">
+        boardId = #{boardid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dfby.pojo.Topic">
+    update tbl_topic
+    set title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      publishTime = #{publishtime,jdbcType=TIMESTAMP},
+      modifyTime = #{modifytime,jdbcType=TIMESTAMP},
+      uid = #{uid,jdbcType=INTEGER},
+      boardId = #{boardid,jdbcType=INTEGER}
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectCoundByCon" resultType="int" parameterType="Topic">
+    select count(*) from tbl_topic
+    <where>
+      <if test="boardid!=null">
+        boardId=#{boardid}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectListByCon"  parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from tbl_topic
+    <where>
+      <if test="topicCon.boardid!=null">
+        boardId=#{topicCon.boardid}
+      </if>
+    </where>
+    limit #{pageStart},#{pageSize}
+  </select>
+
+  <select id="selectTimeDesc" resultType="int">
+    select topicId from tbl_topic order by publishTime desc limit 0,1
+  </select>
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfby.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.dfby.pojo.User">
+    <id column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+    <result column="upass" jdbcType="VARCHAR" property="upass" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="regTime" jdbcType="TIMESTAMP" property="regtime" />
+    <result column="head" jdbcType="VARCHAR" property="head" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    uid, uname, upass, gender, regTime, head
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_user
+    where uid = #{uid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tbl_user
+    where uid = #{uid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dfby.pojo.User">
+    insert into tbl_user (uid, uname, upass, 
+      gender, regTime, head
+      )
+    values (#{uid,jdbcType=INTEGER}, #{uname,jdbcType=VARCHAR}, #{upass,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=VARCHAR}, #{regtime,jdbcType=TIMESTAMP}, #{head,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dfby.pojo.User">
+    insert into tbl_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="uname != null">
+        uname,
+      </if>
+      <if test="upass != null">
+        upass,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="regtime != null">
+        regTime,
+      </if>
+      <if test="head != null">
+        head,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="uname != null">
+        #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="upass != null">
+        #{upass,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="regtime != null">
+        #{regtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="head != null">
+        #{head,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dfby.pojo.User">
+    update tbl_user
+    <set>
+      <if test="uname != null">
+        uname = #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="upass != null">
+        upass = #{upass,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="regtime != null">
+        regTime = #{regtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="head != null">
+        head = #{head,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dfby.pojo.User">
+    update tbl_user
+    set uname = #{uname,jdbcType=VARCHAR},
+      upass = #{upass,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=VARCHAR},
+      regTime = #{regtime,jdbcType=TIMESTAMP},
+      head = #{head,jdbcType=VARCHAR}
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  <select id="checkLogin" resultMap="BaseResultMap" parameterType="User">
+    select * from tbl_user where uname=#{uname} and upass=#{upass}
+  </select>
+</mapper>
